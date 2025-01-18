@@ -1,51 +1,48 @@
-import Fastify from 'fastify'
-import fastifySchedule from '@fastify/schedule'
+import fastify from "fastify";
+const cron = require('node-cron')
+import sampleData from "./data/sampleAffirmations.json";
 
-const fastify = Fastify({
-  logger: true
+const app = fastify({
+  logger: true,
 })
 
 const PORT = 3002
 
-fastify.get('/', async (req, rep) => {
-    return {
-        message: "Toma ligma!"
-    }
-})
+let dailyAffirmation = sampleData.affirmations[0]
 
-fastify.route({
-    method: 'GET',
-    url: '/affirmation/:id',
-    schema: {
-        params: {
-            type: 'object',
-            properties: {
-                id: { type: 'string' }
-            },
-            required: ['id']
-        },
-        response: {
-            200: {
-                type: 'object',
-                properties: {
-                    message: { type: 'string'}
-                },
-                required: ['message']
-            }
-        }
-    },
-    handler: async (req, rep) => {
-        const { id } = req.params as { id: string }
-        return {
-            // message: "You are awesome!"
-            message: `You are awesome! ${id}`
-        }
-    },
-})
+cron.schedule("0 0 * * *", () => {
+  fetchDailyAffirmation();
+});
 
-try {
-    fastify.listen({ port: PORT })
-} catch (error) {
-    fastify.log.error(error)
-    process.exit(1)
+function fetchDailyAffirmation() {
+  try {
+    dailyAffirmation =
+      sampleData.affirmations[
+        Math.floor(Math.random() * sampleData.affirmations.length)
+      ];
+    app.log.info(`Daily affirmation: ${dailyAffirmation}`);
+  } catch (err) {
+    app.log.error("Error fetching daily affirmation: ", err);
+    dailyAffirmation =
+      sampleData.affirmations[
+        Math.floor(Math.random() * sampleData.affirmations.length)
+      ];
+  }
 }
+
+app.get('/daily-affirmation', async (req, rep) => {
+  return {
+    message: dailyAffirmation
+  }
+})
+
+const start = async () => {
+    try {
+        await app.listen({ port: PORT });
+    } catch (error) {
+        app.log.error(error);
+        process.exit(1);
+    }
+}
+  
+start()
