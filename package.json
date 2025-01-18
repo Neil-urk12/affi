@@ -1,0 +1,14 @@
+{
+  "name": "affirmation-api",
+  "version": "1.0.0",
+  "description": "An API that retrieves affirmation messages from a database.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "imisenak",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^5.2.1"
+  }
+}
