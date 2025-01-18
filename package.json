@@ -4,11 +4,21 @@
   "description": "An API that retrieves affirmation messages from a database.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
   },
   "author": "imisenak",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^5.2.1"
+    "@fastify/schedule": "^6.0.0",
+    "fastify": "^5.2.1",
+    "sequelize": "^6.37.5",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
   }
 }
