@@ -7,6 +7,15 @@ import fs from "fs";
 
 dotenv.config();
 
+if (
+  !process.env.DB_HOST ||
+  !process.env.DB_USER ||
+  !process.env.DB_PASSWORD ||
+  !process.env.DB_DATABASE
+) {
+  throw new Error("Missing required database environment variables");
+}
+
 const dbConfig = {
   host: process.env.DB_HOST,
   port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3300,
@@ -26,15 +35,17 @@ const dbConfig = {
 
 const pool = mysql.createPool(dbConfig);
 
-// pool
-//   .getConnection()
-//   .then((connection) => {
-//     console.log("Database connected successfully!");
-//     connection.release();
-//   })
-//   .catch((error) => {
-//     console.error("Error connecting to the database: ", error);
-//   });
+async function createDatabaseConnection() {
+  try {
+    const connection = await pool.getConnection();
+    console.log("Database connection pool initialized");
+    connection.release();
+  } catch (error) {
+    console.error("Error initializing database pool:", error);
+    // Optionally re-throw the error if you want to handle it upstream
+    throw error;
+  }
+}
 
 const app = fastify({
   logger: true,
@@ -95,8 +106,19 @@ app.get("/daily-affirmation", async (req, rep) => {
   };
 });
 
+const closeGracefully = async (signal: string) => {
+  console.log(`Received signal to terminate: ${signal}`);
+  await pool.end();
+  await app.close();
+  process.exit(0);
+};
+
+process.on("SIGINT", () => closeGracefully("SIGINT"));
+process.on("SIGTERM", () => closeGracefully("SIGTERM"));
+
 const start = async () => {
   try {
+    await createDatabaseConnection();
     await app.listen({ port: PORT });
     await fetchDailyAffirmation();
   } catch (error) {
