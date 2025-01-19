@@ -2,6 +2,8 @@ import fastify from "fastify";
 const cron = require('node-cron')
 import sampleData from "./data/sampleAffirmations.json";
 import mysql from 'mysql2/promise'
+import dotenv from 'dotenv'
+// import { initializeDatabase } from "./scripts/initDb";
 
 const dbConfig = {
   host: process.env.DB_HOST,
@@ -20,9 +22,11 @@ const PORT = 3002
 
 let dailyAffirmation = sampleData.affirmations[0]
 
-cron.schedule("0 0 * * *", () => {
-  fetchDailyAffirmation();
+cron.schedule("0 0 * * *", async () => {
+  await fetchDailyAffirmation();
 })
+
+// initializeDatabase()
 
 // function fetchDailyAffirmation() {
 //   try {
@@ -40,14 +44,17 @@ cron.schedule("0 0 * * *", () => {
 //   }
 // }
 
+
+
 async function fetchDailyAffirmation() {
   try {
     dailyAffirmation = await getRandomAffirmationFromDB();
     app.log.info(`Daily affirmation: ${dailyAffirmation}`);
   } catch (err) {
     app.log.error("Error fetching daily affirmation: ", err);
-    // Fallback to a default message or handle the error as needed
-    dailyAffirmation = "Error fetching affirmation.";
+    dailyAffirmation = sampleData.affirmations[
+      Math.floor(Math.random() * sampleData.affirmations.length)
+    ];
   }
 }
 
