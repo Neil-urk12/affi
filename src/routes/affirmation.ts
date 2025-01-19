@@ -19,23 +19,3 @@ const affirmationRoutes = async (fastify: FastifyInstance) => {
 export default fp(affirmationRoutes, {
   name: "affirmation-routes",
 });
-
-// export default async function affirmationRoutes(
-//   fastify: FastifyInstance,
-//   options: any,
-// ) {
-//   let dailyAffirmation: string;
-
-//   fastify.get("/daily-affirmation", async (request, reply) => {
-//     return {
-//       message: dailyAffirmation,
-//     };
-//   });
-
-//   // Expose setter for daily affirmation
-//   return {
-//     setDailyAffirmation: (affirmation: string) => {
-//       dailyAffirmation = affirmation;
-//     },
-//   };
-// }
