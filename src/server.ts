@@ -44,3 +44,9 @@ const start = async () => {
 };
 
 start();
+
+app.get('/', async (request, reply) => {
+  return {
+    message: "You are wonderful. Don't forget to be kind to others!"
+  }
+})
