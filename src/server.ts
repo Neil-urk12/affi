@@ -56,10 +56,4 @@ app.register(cors, {
   origin: '*', 
   methods: ['GET'], 
   allowedHeaders: ['Content-Type'], 
-});
-
-// Example route
-app.get('/daily-affirmation', async (request, reply) => {
-  return { affirmation: 'You are doing great!' };
 })
-
