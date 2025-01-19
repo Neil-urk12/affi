@@ -4,8 +4,8 @@
   "description": "An API that retrieves affirmation messages from a database.",
   "main": "server.js",
   "scripts": {
-    "start": "node src/server.ts",
-    "dev": "nodemon src/server.ts"
+    "start": "node ./src/server.ts",
+    "dev": "nodemon ./src/server.ts"
   },
   "author": "imisenak",
   "license": "ISC",
