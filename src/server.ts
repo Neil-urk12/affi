@@ -50,3 +50,15 @@ app.get('/', async (request, reply) => {
     message: "You are wonderful. Don't forget to be kind to others!"
   }
 })
+
+app.addHook('onSend', (request, reply, payload) => {
+  reply.header('Access-Control-Allow-Origin', '*');
+  reply.header('Access-Control-Allow-Methods', 'GET');
+  reply.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  reply.header('Access-Control-Allow-Credentials', 'false');
+
+  if (request.method === 'OPTIONS') {
+    reply.code(204).send('');
+  }
+});
+
